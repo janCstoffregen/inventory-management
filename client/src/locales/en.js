@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -112,6 +113,16 @@ export default {
     onTimeDelivery: 'On-Time Delivery',
     itemsCount: '{count} items',
     quantity: 'Qty',
+    submittedOrders: {
+      title: 'Submitted Orders',
+      subtitle: 'Restock orders you have placed',
+      empty: 'No submitted orders yet. Place one from the Restocking tab.',
+      leadTime: 'Lead Time',
+      maxLeadTime: 'Max Lead Time',
+      latestDelivery: 'Latest Delivery',
+      days: 'days',
+      itemCount: 'Items'
+    },
     table: {
       orderNumber: 'Order Number',
       orderId: 'Order ID',
@@ -165,6 +176,42 @@ export default {
       date: 'Date',
       amount: 'Amount'
     }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Set a budget and place an automated restocking order based on demand forecasts',
+    budgetCard: {
+      title: 'Available Budget',
+      sublabel: 'Adjust the slider to set how much you can spend'
+    },
+    recommendations: {
+      title: 'Recommended Items',
+      empty: 'No items qualify for restocking at this budget. Try increasing your budget.',
+      itemsSelected: 'Items selected',
+      totalCost: 'Total cost',
+      budgetRemaining: 'Budget remaining'
+    },
+    table: {
+      sku: 'SKU',
+      itemName: 'Item Name',
+      category: 'Category',
+      currentDemand: 'Current Demand',
+      forecastedDemand: 'Forecasted Demand',
+      demandGap: 'Demand Gap',
+      qtyToRestock: 'Qty to Restock',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      trend: 'Trend'
+    },
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    successTitle: 'Order Submitted',
+    successMessage: 'Order {orderNumber} has been submitted. View it on the Orders page.',
+    viewOrders: 'View Orders',
+    submitAnother: 'Submit Another Order',
+    errorMessage: 'Failed to submit the restock order. Please try again.'
   },
 
   // Demand Forecast
