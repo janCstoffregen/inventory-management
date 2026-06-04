@@ -74,6 +74,60 @@
           </table>
         </div>
       </div>
+
+      <div class="card" style="margin-top: 2rem;">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submittedOrders.title') }}</h3>
+          <p style="margin: 0.25rem 0 0; color: #64748b; font-size: 0.875rem;">{{ t('orders.submittedOrders.subtitle') }}</p>
+        </div>
+        <div class="table-container">
+          <div v-if="submittedOrders.length === 0" style="color: #64748b; font-style: italic; text-align: center; padding: 1rem;">
+            {{ t('orders.submittedOrders.empty') }}
+          </div>
+          <table v-else class="orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+                <th class="col-date">{{ t('orders.table.orderDate') }}</th>
+                <th class="col-items">{{ t('orders.submittedOrders.itemCount') }}</th>
+                <th class="col-value">{{ t('orders.table.totalValue') }}</th>
+                <th class="col-date">{{ t('orders.submittedOrders.maxLeadTime') }}</th>
+                <th class="col-date">{{ t('orders.submittedOrders.latestDelivery') }}</th>
+                <th class="col-status">{{ t('orders.table.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in submittedOrders" :key="order.id">
+                <td class="col-order-number"><strong>{{ order.order_number }}</strong></td>
+                <td class="col-date">{{ formatDate(order.created_date) }}</td>
+                <td class="col-items">
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ order.item_count }} {{ t('orders.submittedOrders.itemCount') }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.sku" class="item-entry">
+                        <span class="item-name">{{ item.item_name }}</span>
+                        <span class="item-meta">
+                          {{ t('orders.quantity') }}: {{ item.quantity }} &times; {{ currencySymbol }}{{ item.unit_cost.toLocaleString() }}
+                          &mdash; {{ t('orders.submittedOrders.leadTime') }}: {{ item.lead_time_days }} {{ t('orders.submittedOrders.days') }}
+                        </span>
+                        <span class="item-meta">{{ t('orders.table.totalValue') }}: {{ currencySymbol }}{{ item.line_total.toLocaleString() }}</span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td class="col-value"><strong>{{ currencySymbol }}{{ order.total_cost.toLocaleString() }}</strong></td>
+                <td class="col-date">{{ order.max_lead_time_days }} {{ t('orders.submittedOrders.days') }}</td>
+                <td class="col-date">{{ formatDate(order.latest_expected_delivery) }}</td>
+                <td class="col-status">
+                  <span :class="['badge', getOrderStatusClass(order.status)]">{{ order.status }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +149,7 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const submittedOrders = ref([])
 
     // Use shared filters
     const {
@@ -153,13 +208,22 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    const loadSubmittedOrders = async () => {
+      try {
+        submittedOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        error.value = 'Failed to load submitted orders: ' + err.message
+      }
+    }
+
+    onMounted(() => Promise.all([loadOrders(), loadSubmittedOrders()]))
 
     return {
       t,
       loading,
       error,
       orders,
+      submittedOrders,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
